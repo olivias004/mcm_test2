@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutor Dashboard</title>
+    <title>Resource Manager</title>
     <link href="styles.css" rel="stylesheet">
     <style>
-      .dashboard-container {
+      .resource-container {
         max-width: 800px;
         margin: 50px auto;
         background-color: #f8f9fa;
@@ -14,7 +14,7 @@
         border-radius: 10px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
       }
-      .dashboard-container h1 {
+      .resource-container h1 {
         text-align: center;
       }
       .section {
@@ -39,7 +39,7 @@
       .upload-form button:hover {
         background-color: #0056b3;
       }
-      .contact-list {
+      .resource-list {
         background: white;
         padding: 10px;
         border-radius: 5px;
@@ -50,28 +50,48 @@
       if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("username") !== "Tutor") {
         window.location.href = "login.html";
       }
+      
+      function addTopic() {
+        let topicName = prompt("Enter new topic name:");
+        if (topicName) {
+          let topics = JSON.parse(localStorage.getItem("resourceTopics")) || [];
+          topics.push(topicName);
+          localStorage.setItem("resourceTopics", JSON.stringify(topics));
+          displayTopics();
+        }
+      }
+      
+      function removeTopic(topic) {
+        let topics = JSON.parse(localStorage.getItem("resourceTopics")) || [];
+        topics = topics.filter(t => t !== topic);
+        localStorage.setItem("resourceTopics", JSON.stringify(topics));
+        displayTopics();
+      }
+      
+      function displayTopics() {
+        let topics = JSON.parse(localStorage.getItem("resourceTopics")) || [];
+        let topicList = document.getElementById("topic-list");
+        topicList.innerHTML = "";
+        topics.forEach(topic => {
+          let topicElement = document.createElement("div");
+          topicElement.innerHTML = `<strong>${topic}</strong> <button onclick='removeTopic("${topic}")'>Remove</button>`;
+          topicList.appendChild(topicElement);
+        });
+      }
+      
+      document.addEventListener("DOMContentLoaded", displayTopics);
     </script>
   </head>
   <body>
-    <div class="dashboard-container">
-      <h1>Tutor Dashboard</h1>
+    <div class="resource-container">
+      <h1>Resource Manager</h1>
       <div class="section">
-        <h2>Class Pages</h2>
-        <a href="penrith-home.html">Go to Penrith Class</a> | 
-        <a href="mixed-home.html">Go to Mixed Class</a>
+        <h2>Manage Topics</h2>
+        <button onclick="addTopic()">Add New Topic</button>
+        <div id="topic-list" class="resource-list"></div>
       </div>
-      <div class="section">
-        <h2>Manage Resources</h2>
-        <a href="resource-manager.html">Go to Resource Manager</a>
-      </div>
-      <div class="section">
-        <h2>Website Issues Reported</h2>
-        <div class="contact-list" id="contact-list">
-          <p>No complaints yet.</p>
-        </div>
-      </div>
-      <button onclick="logout()">Logout</button>
     </div>
+    <button onclick="logout()">Logout</button>
     <script>
       function logout() {
         localStorage.removeItem("isLoggedIn");
