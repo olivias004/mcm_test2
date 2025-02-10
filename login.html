@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Penrith Class</title>
+    <link href="styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Login</h1>
+      <form id="login-form">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" placeholder="Enter username" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" placeholder="Enter password" required><br><br>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+      <p id="error-message" style="color: red; display: none;">Invalid username or password!</p>
+    </div>
+
+    <script>
+      // Valid login credentials
+      const credentials = {
+        "Penrith-class": "Lovely-Beagle-78",
+        "Mixed-class": "Glittering-Swan-84",
+        "Tutor": "Gigantic-Ant-23"
+      };
+
+      // Associated homepages for each user
+      const homepages = {
+        "Penrith-class": "penrith-home.html",
+        "Mixed-class": "mixed-home.html",
+        "Tutor": "tutor-dashboard.html"
+      };
+
+      document.getElementById("login-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        // Validate credentials
+        if (credentials[username] && credentials[username] === password) {
+          // Mark the user as logged in
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("username", username); // Store the username to personalize
+          // Redirect to the corresponding homepage
+          window.location.href = homepages[username];
+        } else {
+          // Show error message
+          document.getElementById("error-message").style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>
