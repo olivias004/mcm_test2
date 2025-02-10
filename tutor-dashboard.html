@@ -47,6 +47,7 @@
       }
     </style>
     <script>
+      // Redirect if not a tutor
       if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("username") !== "Tutor") {
         window.location.href = "login.html";
       }
@@ -55,28 +56,99 @@
   <body>
     <div class="dashboard-container">
       <h1>Tutor Dashboard</h1>
+      
+      <!-- Class Links -->
       <div class="section">
         <h2>Class Pages</h2>
         <a href="penrith-home.html">Go to Penrith Class</a> | 
         <a href="mixed-home.html">Go to Mixed Class</a>
       </div>
+      
+      <!-- Homework Upload -->
       <div class="section">
-        <h2>Manage Resources</h2>
-        <a href="resource-manager.html">Go to Resource Manager</a>
+        <h2>Upload Homework</h2>
+        <form class="upload-form">
+          <label>Select Class:</label>
+          <select id="homework-class">
+            <option value="penrith">Penrith Class</option>
+            <option value="mixed">Mixed Class</option>
+          </select>
+          <label>Select Term:</label>
+          <select id="homework-term">
+            <option value="term4-2024">Term 4, 2024</option>
+            <option value="term1-2025">Term 1, 2025</option>
+          </select>
+          <label>Select Week:</label>
+          <select id="homework-week">
+            <option value="week1">Week 1</option>
+            <option value="week2">Week 2</option>
+            <option value="week3">Week 3</option>
+            <option value="week4">Week 4</option>
+            <option value="week5">Week 5</option>
+            <option value="week6">Week 6</option>
+            <option value="week7">Week 7</option>
+            <option value="week8">Week 8</option>
+            <option value="week9">Week 9</option>
+            <option value="week10">Week 10</option>
+          </select>
+          <label>Upload File:</label>
+          <input type="file" id="homework-file">
+          <button type="button" onclick="uploadHomework()">Upload</button>
+        </form>
       </div>
+      
+      <!-- Resource Upload -->
+      <div class="section">
+        <h2>Add to Class Resources</h2>
+        <form class="upload-form">
+          <label>Select Class:</label>
+          <select id="resource-class">
+            <option value="penrith">Penrith Class</option>
+            <option value="mixed">Mixed Class</option>
+          </select>
+          <label>Upload File:</label>
+          <input type="file" id="resource-file">
+          <button type="button" onclick="uploadResource()">Upload</button>
+        </form>
+      </div>
+      
+      <!-- Contact Form Issues -->
       <div class="section">
         <h2>Website Issues Reported</h2>
         <div class="contact-list" id="contact-list">
           <p>No complaints yet.</p>
         </div>
       </div>
+      
       <button onclick="logout()">Logout</button>
     </div>
+    
     <script>
       function logout() {
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("username");
         window.location.href = "login.html";
+      }
+      
+      function uploadHomework() {
+        let selectedClass = document.getElementById("homework-class").value;
+        let selectedTerm = document.getElementById("homework-term").value;
+        let selectedWeek = document.getElementById("homework-week").value;
+        let fileInput = document.getElementById("homework-file");
+
+        if (!fileInput.files.length) {
+          alert("Please select a file to upload!");
+          return;
+        }
+
+        let fileName = fileInput.files[0].name;
+        localStorage.setItem(`${selectedClass}-${selectedTerm}-${selectedWeek}`, fileName);
+
+        alert(`Homework for ${selectedClass} - ${selectedTerm}, ${selectedWeek} uploaded successfully!`);
+      }
+      
+      function uploadResource() {
+        alert("Resource file added successfully!");
       }
     </script>
   </body>
