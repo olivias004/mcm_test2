@@ -25,7 +25,7 @@
         flex-direction: column;
         gap: 10px;
       }
-      .upload-form input, .upload-form button {
+      .upload-form input, .upload-form button, .upload-form select {
         padding: 10px;
         border-radius: 5px;
       }
@@ -73,6 +73,24 @@
             <option value="penrith">Penrith Class</option>
             <option value="mixed">Mixed Class</option>
           </select>
+          <label>Select Term:</label>
+          <select id="homework-term">
+            <option value="term4-2024">Term 4, 2024</option>
+            <option value="term1-2025">Term 1, 2025</option>
+          </select>
+          <label>Select Week:</label>
+          <select id="homework-week">
+            <option value="week1">Week 1</option>
+            <option value="week2">Week 2</option>
+            <option value="week3">Week 3</option>
+            <option value="week4">Week 4</option>
+            <option value="week5">Week 5</option>
+            <option value="week6">Week 6</option>
+            <option value="week7">Week 7</option>
+            <option value="week8">Week 8</option>
+            <option value="week9">Week 9</option>
+            <option value="week10">Week 10</option>
+          </select>
           <label>Upload File:</label>
           <input type="file" id="homework-file">
           <button type="button" onclick="uploadHomework()">Upload</button>
@@ -119,7 +137,20 @@
       }
       
       function uploadHomework() {
-        alert("Homework uploaded successfully!");
+        let selectedClass = document.getElementById("homework-class").value;
+        let selectedTerm = document.getElementById("homework-term").value;
+        let selectedWeek = document.getElementById("homework-week").value;
+        let fileInput = document.getElementById("homework-file");
+
+        if (!fileInput.files.length) {
+          alert("Please select a file to upload!");
+          return;
+        }
+
+        let fileName = fileInput.files[0].name;
+        localStorage.setItem(`${selectedClass}-${selectedTerm}-${selectedWeek}`, fileName);
+
+        alert(`Homework for ${selectedClass} - ${selectedTerm}, ${selectedWeek} uploaded successfully!`);
       }
       
       function uploadResource() {
