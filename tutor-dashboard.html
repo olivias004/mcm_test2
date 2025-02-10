@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Dashboard</title>
+    <link href="styles.css" rel="stylesheet">
+    <style>
+      .dashboard-container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .dashboard-container h1 {
+        text-align: center;
+      }
+      .section {
+        margin-bottom: 30px;
+      }
+      .upload-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .upload-form input, .upload-form button {
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .upload-form button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .upload-form button:hover {
+        background-color: #0056b3;
+      }
+      .contact-list {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+    <script>
+      // Redirect if not a tutor
+      if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("username") !== "Tutor") {
+        window.location.href = "login.html";
+      }
+    </script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <h1>Tutor Dashboard</h1>
+      
+      <!-- Class Links -->
+      <div class="section">
+        <h2>Class Pages</h2>
+        <a href="penrith-home.html">Go to Penrith Class</a> | 
+        <a href="mixed-home.html">Go to Mixed Class</a>
+      </div>
+      
+      <!-- Homework Upload -->
+      <div class="section">
+        <h2>Upload Homework</h2>
+        <form class="upload-form">
+          <label>Select Class:</label>
+          <select id="homework-class">
+            <option value="penrith">Penrith Class</option>
+            <option value="mixed">Mixed Class</option>
+          </select>
+          <label>Upload File:</label>
+          <input type="file" id="homework-file">
+          <button type="button" onclick="uploadHomework()">Upload</button>
+        </form>
+      </div>
+      
+      <!-- Resource Upload -->
+      <div class="section">
+        <h2>Add to Resources</h2>
+        <form class="upload-form">
+          <label>Select Class:</label>
+          <select id="resource-class">
+            <option value="penrith">Penrith Class</option>
+            <option value="mixed">Mixed Class</option>
+          </select>
+          <label>Select Topic:</label>
+          <select id="resource-topic">
+            <option value="series">Series and Sequences</option>
+            <option value="graphing">Graphing Techniques</option>
+            <option value="vectors">Vectors</option>
+          </select>
+          <label>Upload File:</label>
+          <input type="file" id="resource-file">
+          <button type="button" onclick="uploadResource()">Upload</button>
+        </form>
+      </div>
+      
+      <!-- Contact Form Issues -->
+      <div class="section">
+        <h2>Website Issues Reported</h2>
+        <div class="contact-list" id="contact-list">
+          <p>No complaints yet.</p>
+        </div>
+      </div>
+      
+      <button onclick="logout()">Logout</button>
+    </div>
+    
+    <script>
+      function logout() {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("username");
+        window.location.href = "login.html";
+      }
+      
+      function uploadHomework() {
+        alert("Homework uploaded successfully!");
+      }
+      
+      function uploadResource() {
+        alert("Resource file added successfully!");
+      }
+    </script>
+  </body>
+</html>
