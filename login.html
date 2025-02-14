@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Penrith Class</title>
+    <title>Login - MCM System</title>
     <link href="styles.css" rel="stylesheet">
   </head>
   <body>
@@ -26,14 +26,16 @@
       const credentials = {
         "Penrith-class": "Lovely-Beagle-78",
         "Mixed-class": "Glittering-Swan-84",
-        "Tutor": "Gigantic-Ant-23"
+        "Tutor": "Gigantic-Ant-23",
+        "matt-cash": "margin-call505" // Matt Admin login
       };
 
       // Associated homepages for each user
       const homepages = {
         "Penrith-class": "penrith-home.html",
         "Mixed-class": "mixed-home.html",
-        "Tutor": "tutor-dashboard.html"
+        "Tutor": "tutor-dashboard.html",
+        "matt-cash": "matt-admin-dashboard.html" // Redirect Matt to the admin dashboard
       };
 
       document.getElementById("login-form").addEventListener("submit", function (event) {
@@ -44,10 +46,11 @@
 
         // Validate credentials
         if (credentials[username] && credentials[username] === password) {
-          // Mark the user as logged in
+          // Store login session
           localStorage.setItem("isLoggedIn", "true");
-          localStorage.setItem("username", username); // Store the username to personalize
-          // Redirect to the corresponding homepage
+          localStorage.setItem("username", username); // Store username for session
+
+          // Redirect to appropriate homepage
           window.location.href = homepages[username];
         } else {
           // Show error message

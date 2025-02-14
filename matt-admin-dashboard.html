@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matt Admin Dashboard</title>
+    <link href="styles.css" rel="stylesheet">
+    <style>
+      .dashboard-container {
+        max-width: 900px;
+        margin: 50px auto;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .dashboard-container h1 {
+        text-align: center;
+      }
+      .section {
+        margin-bottom: 30px;
+      }
+      .upload-form, .management-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .upload-form input, .upload-form button, .management-form select, .management-form button {
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .upload-form button, .management-form button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .upload-form button:hover, .management-form button:hover {
+        background-color: #0056b3;
+      }
+      .contact-list {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+    <script>
+      // Redirect if not logged in as Matt Cash
+      if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("username") !== "matt-cash") {
+        window.location.href = "login.html";
+      }
+    </script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <h1>Matt Admin Dashboard</h1>
+      
+      <!-- Class Management -->
+      <div class="section">
+        <h2>Manage Classes & Tutors</h2>
+        <form class="management-form">
+          <label>Select Class:</label>
+          <select id="class-select">
+            <option value="penrith">Penrith Class</option>
+            <option value="mixed">Mixed Class</option>
+          </select>
+          <label>Assign Tutor:</label>
+          <input type="text" id="tutor-name" placeholder="Enter tutor's name">
+          <button type="button" onclick="assignTutor()">Assign Tutor</button>
+        </form>
+      </div>
+
+      <!-- Add / Remove Students -->
+      <div class="section">
+        <h2>Manage Students</h2>
+        <form class="management-form">
+          <label>Select Class:</label>
+          <select id="student-class">
+            <option value="penrith">Penrith Class</option>
+            <option value="mixed">Mixed Class</option>
+          </select>
+          <label>Student Name:</label>
+          <input type="text" id="student-name" placeholder="Enter student name">
+          <button type="button" onclick="addStudent()">Add Student</button>
+          <button type="button" onclick="removeStudent()">Remove Student</button>
+        </form>
+      </div>
+      
+      <!-- Resource Management -->
+      <div class="section">
+        <h2>Upload Resources</h2>
+        <form class="upload-form">
+          <label>Select Class:</label>
+          <select id="resource-class">
+            <option value="penrith">Penrith Class</option>
+            <option value="mixed">Mixed Class</option>
+          </select>
+          <label>Select Topic:</label>
+          <select id="resource-topic">
+            <option value="series">Series and Sequences</option>
+            <option value="graphing">Graphing Techniques</option>
+            <option value="vectors">Vectors</option>
+          </select>
+          <label>Upload File:</label>
+          <input type="file" id="resource-file">
+          <button type="button" onclick="uploadResource()">Upload</button>
+        </form>
+      </div>
+      
+      <!-- Contact Issues -->
+      <div class="section">
+        <h2>Reported Issues</h2>
+        <div class="contact-list" id="contact-list">
+          <p>No complaints yet.</p>
+        </div>
+      </div>
+      
+      <button onclick="logout()">Logout</button>
+    </div>
+    
+    <script>
+      function logout() {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("username");
+        window.location.href = "login.html";
+      }
+
+      function assignTutor() {
+        let selectedClass = document.getElementById("class-select").value;
+        let tutorName = document.getElementById("tutor-name").value;
+        if (!tutorName) {
+          alert("Please enter a tutor's name.");
+          return;
+        }
+        alert(`Tutor ${tutorName} assigned to ${selectedClass}.`);
+      }
+
+      function addStudent() {
+        let selectedClass = document.getElementById("student-class").value;
+        let studentName = document.getElementById("student-name").value;
+        if (!studentName) {
+          alert("Please enter a student's name.");
+          return;
+        }
+        alert(`Student ${studentName} added to ${selectedClass}.`);
+      }
+
+      function removeStudent() {
+        let selectedClass = document.getElementById("student-class").value;
+        let studentName = document.getElementById("student-name").value;
+        if (!studentName) {
+          alert("Please enter a student's name.");
+          return;
+        }
+        alert(`Student ${studentName} removed from ${selectedClass}.`);
+      }
+
+      function uploadResource() {
+        alert("Resource file added successfully!");
+      }
+    </script>
+  </body>
+</html>
