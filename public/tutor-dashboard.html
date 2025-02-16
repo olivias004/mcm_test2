@@ -85,7 +85,9 @@
             const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dWpscXBoY2trbHpwdG5zbHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzMTM5NjMsImV4cCI6MjA1NDg4OTk2M30.Z5202__-uqnWiAJsXZxaCZGgOZXnsER8hq-VzRxiHCQ"; 
 
             console.log("🔄 Creating Supabase client...");
-            const supabase = window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const supabase = window.supabase;
+
 
             console.log("🔍 Supabase initialized:", supabase);
 
