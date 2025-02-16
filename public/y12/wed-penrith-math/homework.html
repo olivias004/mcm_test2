@@ -7,57 +7,61 @@
     <link rel="stylesheet" href="../../styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-      .navbar-nav {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        gap: 15px;
-      }
-      .navbar-nav .nav-item {
-        display: inline-block;
-      }
-      .navbar-nav .nav-link {
-        color: white;
-        font-weight: bold;
-        text-transform: uppercase;
-        text-decoration: none;
-        padding: 5px 10px;
-      }
-      .navbar-nav .nav-link:hover {
-        color: #a3d18c;
-      }
-      .navbar-brand {
-        font-size: 24px;
-        color: white;
-      }
-      .term-section {
-        margin-bottom: 30px;
-      }
-      .term-section h2 {
-        margin-bottom: 20px;
-      }
-      .homework-buttons {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 10px;
-      }
-      .homework-buttons a {
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-        padding: 10px 20px;
-        background-color: #F9EFCE;
-        border: 2px solid #D4C08A;
-        border-radius: 5px;
-        text-align: center;
-        transition: background-color 0.3s, transform 0.3s, border-color 0.3s;
-      }
-      .homework-buttons a:hover {
-        background-color: #EAD99C;
-        border-color: #B89F5A;
-      }
+        .navbar-nav {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            gap: 15px;
+        }
+        .navbar-nav .nav-item {
+            display: inline-block;
+        }
+        .navbar-nav .nav-link {
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #a3d18c;
+        }
+        .navbar-brand {
+            font-size: 24px;
+            color: white;
+        }
+        .term-section {
+            margin-bottom: 30px;
+        }
+        .term-section h2 {
+            margin-bottom: 20px;
+        }
+        .homework-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .homework-buttons a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: #F9EFCE;
+            border: 2px solid #D4C08A;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s, border-color 0.3s;
+        }
+        .homework-buttons a:hover {
+            background-color: #EAD99C;
+            border-color: #B89F5A;
+        }
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -115,13 +119,13 @@
       const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
       async function fetchHomework() {
-          const className = "penrith"; // Change this dynamically for different classes
+          const className = "penrith-class"; // Ensure this matches your database entry
           const terms = ["term4-2024", "term1-2025"];
           const weeks = ["week1", "week2", "week3", "week4", "week5", "week6", "week7", "week8", "week9", "week10"];
 
           for (let term of terms) {
               let container = document.getElementById(`${term}-homework`);
-              container.innerHTML = "";
+              container.innerHTML = ""; // Clear previous content
 
               for (let week of weeks) {
                   let { data, error } = await supabase
@@ -130,17 +134,21 @@
                       .eq("class_id", className)
                       .eq("term", term)
                       .eq("week", week)
-                      .single();
+                      .maybeSingle(); // Avoids crashing if there's no data
 
-                  if (error || !data) {
-                      continue;
+                  let weekButton = document.createElement("a");
+                  weekButton.textContent = `Week ${week.replace("week", "")}`;
+
+                  if (!data || error) {
+                      weekButton.href = "#";
+                      weekButton.classList.add("disabled");
+                      weekButton.textContent += " (Not Available)";
+                  } else {
+                      weekButton.href = data.file_url;
+                      weekButton.download = data.file_url.split("/").pop();
+                      weekButton.classList.add("homework-button"); // Ensure it uses existing styles
                   }
 
-                  let fileUrl = data.file_url;
-                  let weekButton = document.createElement("a");
-                  weekButton.href = fileUrl;
-                  weekButton.textContent = week.replace("week", "Week ");
-                  weekButton.download = fileUrl.split("/").pop();
                   container.appendChild(weekButton);
               }
           }
