@@ -24,11 +24,11 @@ img {
 a {
     text-decoration: none;
     transition: all 0.5s ease-in-out;
-    color: #697DBB !important;
+    color: #1f2488; 
 }
 
 a:hover {
-    color: #505FA6 !important;
+    color: #1f2488 !important;
 }
 
 /* Buttons */
@@ -58,14 +58,14 @@ a:hover {
 
 .main-title h1 {
     font-size: 40px;
-    color: #697DBB;
+    color: #1f2488;
 }
 
 /* Navigation Menu */
 
 .navbar {
     position: relative;
-    background: #c6f8fb;
+    background: #aad9fd;
 }
 
 .navbar-brand {
