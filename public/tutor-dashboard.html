@@ -1,101 +1,181 @@
-<script>
-    document.addEventListener("DOMContentLoaded", async function() {
-        console.log("✅ DOM fully loaded and script running");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Dashboard</title>
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .dashboard-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard-container h1 {
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .upload-form input, .upload-form button, .upload-form select {
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .upload-form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .upload-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Tutor Dashboard</h1>
 
-        // ✅ Ensure Supabase SDK is available before using it
-        if (typeof supabase === "undefined") {
+        <!-- Homework Upload -->
+        <div class="section">
+            <h2>Upload Homework</h2>
+            <form class="upload-form">
+                <label>Select Class:</label>
+                <select id="homework-class">
+                    <option value="wed-penrith-math">Penrith Class</option>
+                    <option value="sun-mixed-math">Mixed Class</option>
+                </select>
+                <label>Select Term:</label>
+                <select id="homework-term">
+                    <option value="term4-2024">Term 4, 2024</option>
+                    <option value="term1-2025">Term 1, 2025</option>
+                </select>
+                <label>Select Week:</label>
+                <select id="homework-week">
+                    <option value="week1">Week 1</option>
+                    <option value="week2">Week 2</option>
+                    <option value="week3">Week 3</option>
+                    <option value="week4">Week 4</option>
+                    <option value="week5">Week 5</option>
+                </select>
+                <label>Upload File:</label>
+                <input type="file" id="homework-file">
+                <button type="button" id="upload-homework-btn">Upload</button>
+            </form>
+            <p id="upload-status"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            console.log("✅ DOM fully loaded, script running");
+
+            // ✅ Properly initialize Supabase (Declare it before usage)
+            const SUPABASE_URL = "https://jvujlqphckklzptnslzz.supabase.co";
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dWpscXBoY2trbHpwdG5zbHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzMTM5NjMsImV4cCI6MjA1NDg4OTk2M30.Z5202__-uqnWiAJsXZxaCZGgOZXnsER8hq-VzRxiHCQ"; 
+
             console.log("🔄 Creating Supabase client...");
-            window.supabase = supabase.createClient(
-                "https://jvujlqphckklzptnslzz.supabase.co",
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dWpscXBoY2trbHpwdG5zbHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzMTM5NjMsImV4cCI6MjA1NDg4OTk2M30.Z5202__-uqnWiAJsXZxaCZGgOZXnsER8hq-VzRxiHCQ" // Replace with actual key
-            );
-        }
+            const supabase = window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        console.log("🔍 Supabase initialized:", window.supabase);
+            console.log("🔍 Supabase initialized:", supabase);
 
-        // ✅ Check if Supabase is actually defined
-        if (!window.supabase) {
-            console.error("❌ Supabase failed to initialize!");
-            return;
-        }
-
-        // ✅ Wait for Supabase to be fully ready before calling auth
-        setTimeout(async function() {
-            try {
-                let { data: user, error } = await window.supabase.auth.getUser();
-                if (error || !user) {
-                    console.log("❌ User is NOT authenticated! Uploads may fail.");
-                } else {
-                    console.log("✅ User authenticated:", user);
-                }
-            } catch (err) {
-                console.error("❌ Error checking user authentication:", err);
-            }
-        }, 1000); // Small delay to ensure Supabase is initialized
-
-        // ✅ Ensure upload button works
-        document.getElementById("upload-homework-btn").addEventListener("click", async () => {
-            let statusMsg = document.getElementById("upload-status");
-            statusMsg.textContent = "Uploading file...";
-            statusMsg.style.color = "blue";
-
-            let selectedClass = document.getElementById("homework-class").value;
-            let selectedTerm = document.getElementById("homework-term").value;
-            let selectedWeek = document.getElementById("homework-week").value;
-            let fileInput = document.getElementById("homework-file");
-
-            if (!fileInput.files.length) {
-                statusMsg.textContent = "❌ Please select a file to upload!";
-                statusMsg.style.color = "red";
-                console.log("No file selected.");
+            // ✅ Ensure Supabase is defined before calling auth functions
+            if (!supabase) {
+                console.error("❌ Supabase failed to initialize!");
                 return;
             }
 
-            let file = fileInput.files[0];
-            let filePath = `y12/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
-
-            console.log("📂 Uploading file:", filePath);
-
-            try {
-                // ✅ Upload to Supabase Storage
-                let { data, error } = await window.supabase.storage.from("Homework").upload(filePath, file, {
-                    cacheControl: "3600",
-                    upsert: false,
-                    contentType: file.type
-                });
-
-                if (error) {
-                    throw error;
-                }
-
-                console.log("✅ File uploaded successfully:", data);
-
-                // ✅ Get Public URL of uploaded file
-                let { data: publicUrlData } = window.supabase.storage.from("Homework").getPublicUrl(filePath);
-                console.log("🌍 Public URL:", publicUrlData.publicUrl);
-
-                // ✅ Save file info in Supabase Database (if needed)
-                let { error: dbError } = await window.supabase.from("homework").insert([
-                    { 
-                        class_id: selectedClass, 
-                        term: selectedTerm, 
-                        week: selectedWeek, 
-                        file_url: publicUrlData.publicUrl 
+            // ✅ Check if user is authenticated
+            async function checkUser() {
+                try {
+                    let { data: user, error } = await supabase.auth.getUser();
+                    if (error || !user) {
+                        console.log("❌ User is NOT authenticated! Uploads may fail.");
+                    } else {
+                        console.log("✅ User authenticated:", user);
                     }
-                ]);
+                } catch (err) {
+                    console.error("❌ Error checking user authentication:", err);
+                }
+            }
+            checkUser();
 
-                if (dbError) {
-                    throw dbError;
+            // ✅ Ensure upload button works
+            document.getElementById("upload-homework-btn").addEventListener("click", async () => {
+                let statusMsg = document.getElementById("upload-status");
+                statusMsg.textContent = "Uploading file...";
+                statusMsg.style.color = "blue";
+
+                let selectedClass = document.getElementById("homework-class").value;
+                let selectedTerm = document.getElementById("homework-term").value;
+                let selectedWeek = document.getElementById("homework-week").value;
+                let fileInput = document.getElementById("homework-file");
+
+                if (!fileInput.files.length) {
+                    statusMsg.textContent = "❌ Please select a file to upload!";
+                    statusMsg.style.color = "red";
+                    console.log("No file selected.");
+                    return;
                 }
 
-                statusMsg.textContent = "✅ Homework uploaded successfully!";
-                statusMsg.style.color = "green";
+                let file = fileInput.files[0];
+                let filePath = `y12/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
 
-            } catch (err) {
-                console.error("❌ Upload Error:", err);
-                statusMsg.textContent = "Error: " + err.message;
-                statusMsg.style.color = "red";
-            }
+                console.log("📂 Uploading file:", filePath);
+
+                try {
+                    // ✅ Upload to Supabase Storage
+                    let { data, error } = await supabase.storage.from("Homework").upload(filePath, file, {
+                        cacheControl: "3600",
+                        upsert: false,
+                        contentType: file.type
+                    });
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    console.log("✅ File uploaded successfully:", data);
+
+                    // ✅ Get Public URL of uploaded file
+                    let { data: publicUrlData } = supabase.storage.from("Homework").getPublicUrl(filePath);
+                    console.log("🌍 Public URL:", publicUrlData.publicUrl);
+
+                    // ✅ Save file info in Supabase Database (if needed)
+                    let { error: dbError } = await supabase.from("homework").insert([
+                        { 
+                            class_id: selectedClass, 
+                            term: selectedTerm, 
+                            week: selectedWeek, 
+                            file_url: publicUrlData.publicUrl 
+                        }
+                    ]);
+
+                    if (dbError) {
+                        throw dbError;
+                    }
+
+                    statusMsg.textContent = "✅ Homework uploaded successfully!";
+                    statusMsg.style.color = "green";
+
+                } catch (err) {
+                    console.error("❌ Upload Error:", err);
+                    statusMsg.textContent = "Error: " + err.message;
+                    statusMsg.style.color = "red";
+                }
+            });
         });
-    });
-</script>
+    </script>    
+
+</body>
+</html>
