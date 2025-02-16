@@ -65,18 +65,18 @@ a:hover {
 
 .navbar {
     position: relative;
-    background: #1a1a1a;
+    background: #c6f8fb;
 }
 
 .navbar-brand {
     font-family: "Ubuntu", sans-serif;
     font-size: 60px;
-    color: #697DBB !important;
+    color: #1f2488 !important;
 }
 
 .first-letter {
     font-weight: 700;
-    color: #505FA6 !important;
+    color: #5257bb !important;
 }
 
 .navbar-brand:hover {
@@ -84,7 +84,7 @@ a:hover {
 }
 
 .navbar-toggler {
-    background-color: #697DBB;
+    background-color: #323bdd;
 }
 
 .navbar-toggler:hover {
@@ -156,7 +156,7 @@ a:hover {
 
 .footer {
     position: fixed;
-    background: #1a1a1a;
+    background: #c6f8fb;
     bottom: 0;
     width: 100%;
     padding-top: 20px;
@@ -165,11 +165,11 @@ a:hover {
 .footer .socials .footer-list li a {
     font-size: 40px;
     font-weight: 500;
-    color: #697DBB !important;
+    color: #1a1a1a !important;
 }
 
 .footer .socials .footer-list li a:hover {
-    color: #505FA6 !important;
+    color: #1a1a1a !important;
 }
 
 /* Skills */
@@ -183,7 +183,7 @@ a:hover {
     text-align: center;
     font-size: 20px;
     font-weight: 700;
-    color: #697DBB;
+    color: #1a1a1a;
 }
 
 /* Portfolio */
@@ -201,7 +201,7 @@ a:hover {
 
 .card-title {
     font-size: 15px;
-    color: #697DBB;
+    color: #1a1a1a;
 }
 
 /* Contact */
