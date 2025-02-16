@@ -1,14 +1,13 @@
 /* General CSS */
 
 body, html {
-    background: radial-gradient(circle, #202124 0%, #171717 100%) !important;
+    background: #D4EDF7 !important;
     margin: 0 auto;
     padding: 0;
     height: 100%;
     box-sizing: border-box;
     font-family: "Lora", sans-serif;
-    background: #202124;
-    color: #fff;
+    color: #697DBB;
     overflow-x: hidden; /* hide overflow on the sides */
 }
 
@@ -25,11 +24,11 @@ img {
 a {
     text-decoration: none;
     transition: all 0.5s ease-in-out;
-    color: #FFD700 !important;
+    color: #697DBB !important;
 }
 
 a:hover {
-    color: #FFA500 !important;
+    color: #505FA6 !important;
 }
 
 /* Buttons */
@@ -59,7 +58,7 @@ a:hover {
 
 .main-title h1 {
     font-size: 40px;
-    color: #FFD700;
+    color: #697DBB;
 }
 
 /* Navigation Menu */
@@ -72,12 +71,12 @@ a:hover {
 .navbar-brand {
     font-family: "Ubuntu", sans-serif;
     font-size: 60px;
-    color: #FFD700 !important;
+    color: #697DBB !important;
 }
 
 .first-letter {
     font-weight: 700;
-    color: #FFA500 !important;
+    color: #505FA6 !important;
 }
 
 .navbar-brand:hover {
@@ -85,11 +84,11 @@ a:hover {
 }
 
 .navbar-toggler {
-    background-color: #FFD700;
+    background-color: #697DBB;
 }
 
 .navbar-toggler:hover {
-    background-color: #FFA500;
+    background-color: #505FA6;
 }
 
 .navbar-collapse {
@@ -113,11 +112,11 @@ a:hover {
 }
 
 .is-active {
-    border-bottom: 2px solid #FFD700;
+    border-bottom: 2px solid #697DBB;
 }
 
 .is-active:hover {
-    border-bottom: 2px solid #FFA500;
+    border-bottom: 2px solid #505FA6;
 }
 
 /* Content */
@@ -133,12 +132,24 @@ a:hover {
     font-size: 50px;
     font-weight: 600;
     letter-spacing: 1px;
-    color: #FFD700;
+    color: #697DBB;
 }
 
 .content .content-description {
     font-size: 25px;
-    color: #fff;
+    color: #697DBB;
+}
+
+/* Homework Icons */
+
+.homework-icon {
+    color: #F9EFCE !important;
+}
+
+/* Resources Icons */
+
+.resources-icon {
+    color: #E9DCFC !important;
 }
 
 /* Footer */
@@ -154,11 +165,11 @@ a:hover {
 .footer .socials .footer-list li a {
     font-size: 40px;
     font-weight: 500;
-    color: #FFD700 !important;
+    color: #697DBB !important;
 }
 
 .footer .socials .footer-list li a:hover {
-    color: #FFA500 !important;
+    color: #505FA6 !important;
 }
 
 /* Skills */
@@ -172,7 +183,7 @@ a:hover {
     text-align: center;
     font-size: 20px;
     font-weight: 700;
-    color: #FFD700;
+    color: #697DBB;
 }
 
 /* Portfolio */
@@ -190,7 +201,7 @@ a:hover {
 
 .card-title {
     font-size: 15px;
-    color: #FFD700;
+    color: #697DBB;
 }
 
 /* Contact */
