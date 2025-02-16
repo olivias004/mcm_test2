@@ -79,24 +79,28 @@
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
             console.log("✅ DOM fully loaded, script running");
-
-            // ✅ Properly initialize Supabase (Declare it before usage)
+    
+            // ✅ Extract the createClient function from the Supabase SDK
+            const { createClient } = supabase;
+    
+            // ✅ Supabase credentials
             const SUPABASE_URL = "https://jvujlqphckklzptnslzz.supabase.co";
-            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dWpscXBoY2trbHpwdG5zbHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzMTM5NjMsImV4cCI6MjA1NDg4OTk2M30.Z5202__-uqnWiAJsXZxaCZGgOZXnsER8hq-VzRxiHCQ"; 
-
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dWpscXBoY2trbHpwdG5zbHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzMTM5NjMsImV4cCI6MjA1NDg4OTk2M30.Z5202__-uqnWiAJsXZxaCZGgOZXnsER8hq-VzRxiHCQ";
+    
             console.log("🔄 Creating Supabase client...");
-            window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            const supabase = window.supabase;
-
-
+    
+            // ✅ Correct Supabase client initialization
+            const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            window.supabase = supabase; // Make it globally accessible
+    
             console.log("🔍 Supabase initialized:", supabase);
-
-            // ✅ Ensure Supabase is defined before calling auth functions
+    
+            // ✅ Ensure Supabase is properly initialized
             if (!supabase) {
                 console.error("❌ Supabase failed to initialize!");
                 return;
             }
-
+    
             // ✅ Check if user is authenticated
             async function checkUser() {
                 try {
@@ -111,30 +115,30 @@
                 }
             }
             checkUser();
-
+    
             // ✅ Ensure upload button works
             document.getElementById("upload-homework-btn").addEventListener("click", async () => {
                 let statusMsg = document.getElementById("upload-status");
                 statusMsg.textContent = "Uploading file...";
                 statusMsg.style.color = "blue";
-
+    
                 let selectedClass = document.getElementById("homework-class").value;
                 let selectedTerm = document.getElementById("homework-term").value;
                 let selectedWeek = document.getElementById("homework-week").value;
                 let fileInput = document.getElementById("homework-file");
-
+    
                 if (!fileInput.files.length) {
                     statusMsg.textContent = "❌ Please select a file to upload!";
                     statusMsg.style.color = "red";
                     console.log("No file selected.");
                     return;
                 }
-
+    
                 let file = fileInput.files[0];
                 let filePath = `y12/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
-
+    
                 console.log("📂 Uploading file:", filePath);
-
+    
                 try {
                     // ✅ Upload to Supabase Storage
                     let { data, error } = await supabase.storage.from("Homework").upload(filePath, file, {
@@ -142,17 +146,17 @@
                         upsert: false,
                         contentType: file.type
                     });
-
+    
                     if (error) {
                         throw error;
                     }
-
+    
                     console.log("✅ File uploaded successfully:", data);
-
+    
                     // ✅ Get Public URL of uploaded file
                     let { data: publicUrlData } = supabase.storage.from("Homework").getPublicUrl(filePath);
                     console.log("🌍 Public URL:", publicUrlData.publicUrl);
-
+    
                     // ✅ Save file info in Supabase Database (if needed)
                     let { error: dbError } = await supabase.from("homework").insert([
                         { 
@@ -162,14 +166,14 @@
                             file_url: publicUrlData.publicUrl 
                         }
                     ]);
-
+    
                     if (dbError) {
                         throw dbError;
                     }
-
+    
                     statusMsg.textContent = "✅ Homework uploaded successfully!";
                     statusMsg.style.color = "green";
-
+    
                 } catch (err) {
                     console.error("❌ Upload Error:", err);
                     statusMsg.textContent = "Error: " + err.message;
@@ -177,7 +181,8 @@
                 }
             });
         });
-    </script>    
+    </script>
+    
 
 </body>
 </html>
