@@ -7,57 +7,44 @@
     <link href="styles.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-      .dashboard-container {
-        max-width: 800px;
-        margin: 50px auto;
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      .dashboard-container h1 {
-        text-align: center;
-      }
-      .section {
-        margin-bottom: 30px;
-      }
-      .upload-form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .upload-form input, .upload-form button, .upload-form select {
-        padding: 10px;
-        border-radius: 5px;
-      }
-      .upload-form button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      .upload-form button:hover {
-        background-color: #0056b3;
-      }
-      .contact-list {
-        background: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      }
+        .dashboard-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard-container h1 {
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .upload-form input, .upload-form button, .upload-form select {
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .upload-form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .upload-form button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <h1>Tutor Dashboard</h1>
-
-        <!-- Class Links -->
-        <div class="section">
-            <h2>Class Pages</h2>
-            <a href="y12/wed-penrith-math/home.html">Go to Penrith Class</a> | 
-            <a href="y12/sun-mixed-math/home.html">Go to Mixed Class</a>
-        </div>
 
         <!-- Homework Upload -->
         <div class="section">
@@ -83,149 +70,57 @@
                 </select>
                 <label>Upload File:</label>
                 <input type="file" id="homework-file">
-                <button type="button" onclick="uploadHomework()">Upload</button>
+                <button type="button" id="upload-homework-btn">Upload</button>
             </form>
+            <p id="upload-status"></p>
         </div>
-
-        <!-- Resource Upload -->
-        <div class="section">
-            <h2>Add to Class Resources</h2>
-            <form class="upload-form">
-                <label>Select Class:</label>
-                <select id="resource-class">
-                    <option value="wed-penrith-math">Penrith Class</option>
-                    <option value="sun-mixed-math">Mixed Class</option>
-                </select>
-                <label>Upload File:</label>
-                <input type="file" id="resource-file">
-                <button type="button" onclick="uploadResource()">Upload</button>
-            </form>
-        </div>
-
-        <!-- Contact Form Issues -->
-        <div class="section">
-            <h2>Website Issues Reported</h2>
-            <div class="contact-list" id="contact-list">
-                <p>No complaints yet.</p>
-            </div>
-        </div>
-
-        <button onclick="logout()">Logout</button>
     </div>
 
     <script>
         // Supabase Setup
         const SUPABASE_URL = "https://jvujlqphckklzptnslzz.supabase.co";
-        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY_HERE";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function uploadHomework() {
+        document.getElementById("upload-homework-btn").addEventListener("click", async () => {
             let selectedClass = document.getElementById("homework-class").value;
             let selectedTerm = document.getElementById("homework-term").value;
             let selectedWeek = document.getElementById("homework-week").value;
             let fileInput = document.getElementById("homework-file");
+            let statusMsg = document.getElementById("upload-status");
 
             if (!fileInput.files.length) {
-                alert("Please select a file to upload!");
+                statusMsg.textContent = "Please select a file to upload!";
+                statusMsg.style.color = "red";
                 return;
             }
 
             let file = fileInput.files[0];
-            let filePath = `y12/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
+            let filePath = `homework/y12/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
 
-            console.log("Uploading file to:", filePath);
-
-            // Upload to Supabase Storage
-            const { data, error } = await supabase.storage.from("homework").upload(filePath, file);
-
-            if (error) {
-                console.error("Upload error:", error.message);
-                alert("Error uploading file: " + error.message);
-                return;
+            try {
+                // Upload to Supabase Storage
+                let { data, error } = await supabase.storage.from("Homework").upload(filePath, file);
+                
+                if (error) throw error;
+                
+                let { data: publicUrlData } = supabase.storage.from("Homework").getPublicUrl(filePath);
+                
+                // Save file info in Supabase database
+                let { error: dbError } = await supabase.from("homework").insert([
+                    { class_id: selectedClass, term: selectedTerm, week: selectedWeek, file_url: publicUrlData.publicUrl }
+                ]);
+                
+                if (dbError) throw dbError;
+                
+                statusMsg.textContent = "Homework uploaded successfully!";
+                statusMsg.style.color = "green";
+            } catch (err) {
+                console.error("Upload Error:", err);
+                statusMsg.textContent = "Error: " + err.message;
+                statusMsg.style.color = "red";
             }
-
-            console.log("Upload successful:", data);
-
-            let { data: publicData, error: publicError } = await supabase
-                .storage
-                .from("homework")
-                .getPublicUrl(filePath);
-
-            if (publicError) {
-                console.error("Public URL error:", publicError.message);
-                alert("Error getting public URL: " + publicError.message);
-                return;
-            }
-
-            console.log("File Public URL:", publicData.publicUrl);
-
-            // Save file info in Supabase database
-            const { error: dbError } = await supabase.from("homework").insert([
-                { class_id: selectedClass, term: selectedTerm, week: selectedWeek, file_url: publicData.publicUrl }
-            ]);
-
-            if (dbError) {
-                console.error("Database Insert Error:", dbError.message);
-                alert("Database error: " + dbError.message);
-                return;
-            }
-
-            alert(`Homework uploaded successfully!`);
-        }
-
-        async function uploadResource() {
-            let selectedClass = document.getElementById("resource-class").value;
-            let fileInput = document.getElementById("resource-file");
-
-            if (!fileInput.files.length) {
-                alert("Please select a file to upload!");
-                return;
-            }
-
-            let file = fileInput.files[0];
-            let filePath = `y12/resources/${selectedClass}/${file.name}`;
-
-            console.log("Uploading resource to:", filePath);
-
-            const { data, error } = await supabase.storage.from("resources").upload(filePath, file);
-
-            if (error) {
-                console.error("Upload error:", error.message);
-                alert("Error uploading file: " + error.message);
-                return;
-            }
-
-            let { data: publicData, error: publicError } = await supabase
-                .storage
-                .from("resources")
-                .getPublicUrl(filePath);
-
-            if (publicError) {
-                console.error("Public URL error:", publicError.message);
-                alert("Error getting public URL: " + publicError.message);
-                return;
-            }
-
-            console.log("Resource Public URL:", publicData.publicUrl);
-
-            const { error: dbError } = await supabase.from("resources").insert([
-                { class_id: selectedClass, file_url: publicData.publicUrl }
-            ]);
-
-            if (dbError) {
-                console.error("Database Insert Error:", dbError.message);
-                alert("Database error: " + dbError.message);
-                return;
-            }
-
-            alert("Resource uploaded successfully!");
-        }
-
-        function logout() {
-            localStorage.removeItem("isLoggedIn");
-            localStorage.removeItem("username");
-            window.location.href = "login.html";
-        }
+        });
     </script>
 </body>
 </html>
