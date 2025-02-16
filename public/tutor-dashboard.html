@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutor Dashboard</title>
     <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       .dashboard-container {
         max-width: 800px;
@@ -46,110 +47,153 @@
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
       }
     </style>
-    <script>
-      // Redirect if not a tutor
-      if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("username") !== "Tutor") {
-        window.location.href = "login.html";
-      }
-    </script>
-  </head>
-  <body>
+</head>
+<body>
     <div class="dashboard-container">
-      <h1>Tutor Dashboard</h1>
-      
-      <!-- Class Links -->
-      <div class="section">
-        <h2>Class Pages</h2>
-        <a href="y12/wed-penrith-math/home.html">Go to Penrith Class</a> | 
-        <a href="mixed-home.html">Go to Mixed Class</a>
-      </div>
-      
-      <!-- Homework Upload -->
-      <div class="section">
-        <h2>Upload Homework</h2>
-        <form class="upload-form">
-          <label>Select Class:</label>
-          <select id="homework-class">
-            <option value="penrith">Penrith Class</option>
-            <option value="mixed">Mixed Class</option>
-          </select>
-          <label>Select Term:</label>
-          <select id="homework-term">
-            <option value="term4-2024">Term 4, 2024</option>
-            <option value="term1-2025">Term 1, 2025</option>
-          </select>
-          <label>Select Week:</label>
-          <select id="homework-week">
-            <option value="week1">Week 1</option>
-            <option value="week2">Week 2</option>
-            <option value="week3">Week 3</option>
-            <option value="week4">Week 4</option>
-            <option value="week5">Week 5</option>
-            <option value="week6">Week 6</option>
-            <option value="week7">Week 7</option>
-            <option value="week8">Week 8</option>
-            <option value="week9">Week 9</option>
-            <option value="week10">Week 10</option>
-          </select>
-          <label>Upload File:</label>
-          <input type="file" id="homework-file">
-          <button type="button" onclick="uploadHomework()">Upload</button>
-        </form>
-      </div>
-      
-      <!-- Resource Upload -->
-      <div class="section">
-        <h2>Add to Class Resources</h2>
-        <form class="upload-form">
-          <label>Select Class:</label>
-          <select id="resource-class">
-            <option value="penrith">Penrith Class</option>
-            <option value="mixed">Mixed Class</option>
-          </select>
-          <label>Upload File:</label>
-          <input type="file" id="resource-file">
-          <button type="button" onclick="uploadResource()">Upload</button>
-        </form>
-      </div>
-      
-      <!-- Contact Form Issues -->
-      <div class="section">
-        <h2>Website Issues Reported</h2>
-        <div class="contact-list" id="contact-list">
-          <p>No complaints yet.</p>
-        </div>
-      </div>
-      
-      <button onclick="logout()">Logout</button>
-    </div>
-    
-    <script>
-      function logout() {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("username");
-        window.location.href = "login.html";
-      }
-      
-      function uploadHomework() {
-        let selectedClass = document.getElementById("homework-class").value;
-        let selectedTerm = document.getElementById("homework-term").value;
-        let selectedWeek = document.getElementById("homework-week").value;
-        let fileInput = document.getElementById("homework-file");
+        <h1>Tutor Dashboard</h1>
 
-        if (!fileInput.files.length) {
-          alert("Please select a file to upload!");
-          return;
+        <!-- Class Links -->
+        <div class="section">
+            <h2>Class Pages</h2>
+            <a href="y12/wed-penrith-math/home.html">Go to Penrith Class</a> | 
+            <a href="y12/sun-mixed-math/home.html">Go to Mixed Class</a>
+        </div>
+
+        <!-- Homework Upload -->
+        <div class="section">
+            <h2>Upload Homework</h2>
+            <form class="upload-form">
+                <label>Select Class:</label>
+                <select id="homework-class">
+                    <option value="wed-penrith-math">Penrith Class</option>
+                    <option value="sun-mixed-math">Mixed Class</option>
+                </select>
+                <label>Select Term:</label>
+                <select id="homework-term">
+                    <option value="term4-2024">Term 4, 2024</option>
+                    <option value="term1-2025">Term 1, 2025</option>
+                </select>
+                <label>Select Week:</label>
+                <select id="homework-week">
+                    <option value="week1">Week 1</option>
+                    <option value="week2">Week 2</option>
+                    <option value="week3">Week 3</option>
+                    <option value="week4">Week 4</option>
+                    <option value="week5">Week 5</option>
+                </select>
+                <label>Upload File:</label>
+                <input type="file" id="homework-file">
+                <button type="button" onclick="uploadHomework()">Upload</button>
+            </form>
+        </div>
+
+        <!-- Resource Upload -->
+        <div class="section">
+            <h2>Add to Class Resources</h2>
+            <form class="upload-form">
+                <label>Select Class:</label>
+                <select id="resource-class">
+                    <option value="wed-penrith-math">Penrith Class</option>
+                    <option value="sun-mixed-math">Mixed Class</option>
+                </select>
+                <label>Upload File:</label>
+                <input type="file" id="resource-file">
+                <button type="button" onclick="uploadResource()">Upload</button>
+            </form>
+        </div>
+
+        <!-- Contact Form Issues -->
+        <div class="section">
+            <h2>Website Issues Reported</h2>
+            <div class="contact-list" id="contact-list">
+                <p>No complaints yet.</p>
+            </div>
+        </div>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        // Supabase Setup
+        const SUPABASE_URL = "YOUR_SUPABASE_URL";
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function uploadHomework() {
+            let selectedClass = document.getElementById("homework-class").value;
+            let selectedTerm = document.getElementById("homework-term").value;
+            let selectedWeek = document.getElementById("homework-week").value;
+            let fileInput = document.getElementById("homework-file");
+
+            if (!fileInput.files.length) {
+                alert("Please select a file to upload!");
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let filePath = `homework/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
+
+            // Upload to Supabase Storage
+            const { data, error } = await supabase.storage.from("homework").upload(filePath, file);
+
+            if (error) {
+                alert("Error uploading file: " + error.message);
+                return;
+            }
+
+            let publicUrl = supabase.storage.from("homework").getPublicUrl(filePath).data.publicUrl;
+
+            // Save file info in Supabase database
+            const { error: dbError } = await supabase.from("homework").insert([
+                { class_id: selectedClass, term: selectedTerm, week: selectedWeek, file_url: publicUrl }
+            ]);
+
+            if (dbError) {
+                alert("Database error: " + dbError.message);
+                return;
+            }
+
+            alert(`Homework uploaded successfully!`);
         }
 
-        let fileName = fileInput.files[0].name;
-        localStorage.setItem(`${selectedClass}-${selectedTerm}-${selectedWeek}`, fileName);
+        async function uploadResource() {
+            let selectedClass = document.getElementById("resource-class").value;
+            let fileInput = document.getElementById("resource-file");
 
-        alert(`Homework for ${selectedClass} - ${selectedTerm}, ${selectedWeek} uploaded successfully!`);
-      }
-      
-      function uploadResource() {
-        alert("Resource file added successfully!");
-      }
+            if (!fileInput.files.length) {
+                alert("Please select a file to upload!");
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let filePath = `resources/${selectedClass}/${file.name}`;
+
+            const { data, error } = await supabase.storage.from("resources").upload(filePath, file);
+
+            if (error) {
+                alert("Error uploading file: " + error.message);
+                return;
+            }
+
+            let publicUrl = supabase.storage.from("resources").getPublicUrl(filePath).data.publicUrl;
+
+            const { error: dbError } = await supabase.from("resources").insert([
+                { class_id: selectedClass, file_url: publicUrl }
+            ]);
+
+            if (dbError) {
+                alert("Database error: " + dbError.message);
+                return;
+            }
+
+            alert("Resource uploaded successfully!");
+        }
+
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("username");
+            window.location.href = "login.html";
+        }
     </script>
-  </body>
+</body>
 </html>
