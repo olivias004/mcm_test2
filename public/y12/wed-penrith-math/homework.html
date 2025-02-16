@@ -47,7 +47,7 @@
         color: white;
         font-weight: bold;
         padding: 10px 20px;
-        background-color: #007bff;
+        background-color: #F9EFCE;
         border-radius: 5px;
         text-align: center;
         transition: background-color 0.3s, transform 0.3s;
@@ -60,7 +60,7 @@
     <script>
       // Redirect to login page if not logged in or incorrect class
       if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("username") !== "Penrith-class") {
-        window.location.href = "login.html";
+        window.location.href = "../../login.html";
       }
 
       document.addEventListener("DOMContentLoaded", function() {
