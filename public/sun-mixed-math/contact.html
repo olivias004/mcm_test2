@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixed Class - Contact</title>
+    <link href="styles.css" rel="stylesheet">
+    <style>
+      .navbar-nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+      }
+      .navbar-nav .nav-item {
+        display: inline-block;
+      }
+      .navbar-nav .nav-link {
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 5px 10px;
+      }
+      .navbar-nav .nav-link:hover {
+        color: #a3d18c;
+      }
+      .navbar-brand {
+        font-size: 24px;
+        color: white;
+      }
+      .contact-container {
+        padding: 20px;
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .contact-container h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .contact-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .contact-container input,
+      .contact-container textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+      }
+      .contact-container button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .contact-container button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+    <script>
+      // Redirect to login page if not logged in or incorrect class
+      if (!localStorage.getItem("isLoggedIn") || localStorage.getItem("username") !== "Mixed-class") {
+        window.location.href = "login.html";
+      }
+    </script>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <!-- Start of the Header -->
+      <div class="header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <div class="container">
+            <a class="navbar-brand" href="mixed-home.html"><span class="first-letter">M</span>ixed <span class="first-letter">C</span>lass</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="mixed-home.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="mixed-homework.html">Homework</a></li>
+                <li class="nav-item"><a class="nav-link" href="mixed-resources.html">Resources</a></li>
+                <li class="nav-item"><a class="nav-link is-active" href="mixed-contact.html">Contact</a></li>
+                <li class="nav-item"><button onclick="logout()" class="btn btn-secondary">Logout</button></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <!-- End of the Header -->
+      <!-- Start of the Main Content -->
+      <div class="contact-container">
+        <h1>Contact Us</h1>
+        <p>If you have any issues with the website, please fill out the form below:</p>
+        <form>
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Your Email" required>
+          <textarea placeholder="Describe your issue..." rows="5" required></textarea>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+      <!-- End of the Main Content -->
+    </div>
+    <script>
+      function logout() {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("username");
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>

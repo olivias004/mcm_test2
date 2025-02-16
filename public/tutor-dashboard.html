@@ -116,7 +116,7 @@
     <script>
         // Supabase Setup
         const SUPABASE_URL = "https://jvujlqphckklzptnslzz.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2dWpscXBoY2trbHpwdG5zbHp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzMTM5NjMsImV4cCI6MjA1NDg4OTk2M30.Z5202__-uqnWiAJsXZxaCZGgOZXnsER8hq-VzRxiHCQ";
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function uploadHomework() {
@@ -131,24 +131,41 @@
             }
 
             let file = fileInput.files[0];
-            let filePath = `homework/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
+            let filePath = `y12/${selectedClass}/${selectedTerm}/${selectedWeek}/${file.name}`;
+
+            console.log("Uploading file to:", filePath);
 
             // Upload to Supabase Storage
             const { data, error } = await supabase.storage.from("homework").upload(filePath, file);
 
             if (error) {
+                console.error("Upload error:", error.message);
                 alert("Error uploading file: " + error.message);
                 return;
             }
 
-            let publicUrl = supabase.storage.from("homework").getPublicUrl(filePath).data.publicUrl;
+            console.log("Upload successful:", data);
+
+            let { data: publicData, error: publicError } = await supabase
+                .storage
+                .from("homework")
+                .getPublicUrl(filePath);
+
+            if (publicError) {
+                console.error("Public URL error:", publicError.message);
+                alert("Error getting public URL: " + publicError.message);
+                return;
+            }
+
+            console.log("File Public URL:", publicData.publicUrl);
 
             // Save file info in Supabase database
             const { error: dbError } = await supabase.from("homework").insert([
-                { class_id: selectedClass, term: selectedTerm, week: selectedWeek, file_url: publicUrl }
+                { class_id: selectedClass, term: selectedTerm, week: selectedWeek, file_url: publicData.publicUrl }
             ]);
 
             if (dbError) {
+                console.error("Database Insert Error:", dbError.message);
                 alert("Database error: " + dbError.message);
                 return;
             }
@@ -166,22 +183,37 @@
             }
 
             let file = fileInput.files[0];
-            let filePath = `resources/${selectedClass}/${file.name}`;
+            let filePath = `y12/resources/${selectedClass}/${file.name}`;
+
+            console.log("Uploading resource to:", filePath);
 
             const { data, error } = await supabase.storage.from("resources").upload(filePath, file);
 
             if (error) {
+                console.error("Upload error:", error.message);
                 alert("Error uploading file: " + error.message);
                 return;
             }
 
-            let publicUrl = supabase.storage.from("resources").getPublicUrl(filePath).data.publicUrl;
+            let { data: publicData, error: publicError } = await supabase
+                .storage
+                .from("resources")
+                .getPublicUrl(filePath);
+
+            if (publicError) {
+                console.error("Public URL error:", publicError.message);
+                alert("Error getting public URL: " + publicError.message);
+                return;
+            }
+
+            console.log("Resource Public URL:", publicData.publicUrl);
 
             const { error: dbError } = await supabase.from("resources").insert([
-                { class_id: selectedClass, file_url: publicUrl }
+                { class_id: selectedClass, file_url: publicData.publicUrl }
             ]);
 
             if (dbError) {
+                console.error("Database Insert Error:", dbError.message);
                 alert("Database error: " + dbError.message);
                 return;
             }
