@@ -42,20 +42,23 @@
         grid-template-columns: repeat(5, 1fr);
         gap: 10px;
       }
+
       .homework-buttons a {
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-        padding: 10px 20px;
-        background-color: #F9EFCE;
-        border-radius: 5px;
-        text-align: center;
-        transition: background-color 0.3s, transform 0.3s;
-      }
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #F9EFCE;
+    border: 2px solid #D4C08A; /* Deeper shade of yellow */
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s, transform 0.3s, border-color 0.3s;
+}
+
       .homework-buttons a:hover {
-        background-color: #0056b3;
-        transform: scale(1.05);
-      }
+    background-color: #EAD99C; /* Slightly darker yellow for hover */
+    border-color: #B89F5A; /* Even deeper shade for contrast */
+}
     </style>
     <script>
       // Redirect to login page if not logged in or incorrect class
